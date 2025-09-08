@@ -1,5 +1,4 @@
 <script >
-  import DashboardLayout from '../../layouts/DashboardLayout.svelte';
   
   let activeTab = 'search';
   let searchQuery = '';
