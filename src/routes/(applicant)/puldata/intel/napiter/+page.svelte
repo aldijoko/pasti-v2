@@ -3,9 +3,9 @@
   import { goto } from '$app/navigation';
 
   const TABS = [
-    { key: 'daftar', label: 'Daftar', perm: 'intel.napi.daftar' },
-    { key: 'rekap', label: 'Rekap', perm: 'intel.napi.rekap' },
-    { key: 'history', label: 'History', perm: 'intel.napi.history' }
+    { key: 'exist', label: 'Napi / Tahanan', perm: 'intel.napiter.exist' },
+    { key: 'new', label: 'Napi / Tahanan Baru', perm: 'intel.napiter.new' },
+    // { key: 'history', label: 'History', perm: 'intel.napi.history' }
   ];
 
   $: user = $page.data.user;
@@ -21,12 +21,12 @@
 </script>
 
 <svelte:head>
-  <title>Intel - Napi</title>
+  <title>Intel - Napiter</title>
 </svelte:head>
 
 <div class="space-y-6">
   <div>
-    <h1 class="text-2xl font-bold text-gray-900">Intel - Napi</h1>
+    <h1 class="text-2xl font-bold text-gray-900">Intel - Napiter</h1>
     <p class="mt-1 text-sm text-gray-500">Data narapidana terkait.</p>
   </div>
 
@@ -46,9 +46,9 @@
     <div class="bg-white rounded-b-lg shadow p-6"><p class="text-gray-600">Hubungi administrator untuk mendapatkan akses.</p></div>
   {:else}
     <div class="bg-white rounded-b-lg shadow p-4 sm:p-6">
-      {#if currentKey === 'daftar'}
+      {#if currentKey === 'exist'}
         <section class="space-y-4">
-          <h2 class="text-lg font-semibold text-gray-900">Daftar Napi</h2>
+          <h2 class="text-lg font-semibold text-gray-900">Napi / Tahanan</h2>
           <div class="overflow-hidden rounded-lg border border-gray-200">
             <table class="min-w-full divide-y divide-gray-200">
               <thead class="bg-gray-50"><tr><th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Nama</th><th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">No. Reg</th><th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Status</th></tr></thead>
@@ -61,9 +61,9 @@
         </section>
       {/if}
 
-      {#if currentKey === 'rekap'}
+      {#if currentKey === 'new'}
         <section class="space-y-4">
-          <h2 class="text-lg font-semibold text-gray-900">Rekap Napi</h2>
+          <h2 class="text-lg font-semibold text-gray-900">Napi / Tahanan Baru</h2>
           <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
             <div class="bg-gray-50 rounded-lg p-4"><div class="text-xs text-gray-500">Total</div><div class="mt-1 text-2xl font-bold text-gray-900">120</div></div>
             <div class="bg-gray-50 rounded-lg p-4"><div class="text-xs text-gray-500">Monitor</div><div class="mt-1 text-2xl font-bold text-gray-900">18</div></div>
@@ -72,7 +72,7 @@
         </section>
       {/if}
 
-      {#if currentKey === 'history'}
+      <!-- {#if currentKey === 'history'}
         <section class="space-y-4">
           <h2 class="text-lg font-semibold text-gray-900">History Akses</h2>
           <ul class="list-disc pl-6 text-sm text-gray-700 space-y-2">
@@ -80,7 +80,7 @@
             <li>2025-08-31 13:05 - admin melakukan rekap</li>
           </ul>
         </section>
-      {/if}
+      {/if} -->
     </div>
   {/if}
 </div>

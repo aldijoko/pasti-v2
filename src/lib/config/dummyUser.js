@@ -27,6 +27,21 @@ export const dummyUsers = [
       "intel.penangkapan.daftar",
       "intel.penangkapan.rekap",
       "intel.penangkapan.history",
+      // Intel DTTOT
+      "puldata.intel.dttot",
+      "intel.dttot.daftar",
+      "intel.dttot.rekap",
+      "intel.dttot.history",
+      // Intel Data Terdakwa
+      "puldata.intel.terdakwa",
+      "intel.terdakwa.daftar",
+      "intel.terdakwa.rekap",
+      "intel.terdakwa.history",
+      // Serangan Teror submenu + tabs
+      "puldata.serangan-teror",
+      "serangan.kejadian",
+      "serangan.orang",
+      "serangan.identifikasi",
       "puldata.bdi",
       "olahdata.hasillab",
       "olahdata.hasillaporan",
@@ -37,7 +52,9 @@ export const dummyUsers = [
       "lapinfo.daftar",
       "lapinfo.rekapkonten",
       "lapinfo.rekapmedsos",
+      "lapinfo.rekapnomorsurat",
       "lapinfo.takedown",
+      "lapinfo.takedownold",
       "lapinfo.khusus"
     ]
   },

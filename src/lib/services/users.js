@@ -90,6 +90,13 @@ export function updateUser({ original, username, password, role, permissions }) 
   };
 }
 
+/** @param {string} username */
+export function deleteUser(username) {
+  const idx = users.findIndex((u) => u.username === username);
+  if (idx === -1) throw new Error("User not found");
+  users.splice(idx, 1);
+}
+
 /**
  * Update profile fields for a user (name, avatar, username, and password).
  * Does minimal validation; call-site should validate inputs.

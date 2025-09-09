@@ -45,7 +45,7 @@
   <!-- Items with children -->
   {#if hasChildren}
     {#if hasRoute}
-      <!-- Click title navigates; caret toggles submenu -->
+      <!-- Click title toggles submenu (prevents navigation); caret also toggles -->
       <div class="group flex items-center w-full px-3 py-2 text-sm font-medium rounded-md transition-colors duration-200
           {sidebarCollapsed ? 'justify-center' : ''}
           {isActive
@@ -56,6 +56,10 @@
           href={route}
           class="flex items-center min-w-0 flex-1 {sidebarCollapsed ? 'justify-center' : ''}"
           title={sidebarCollapsed ? (item.title || '') : ''}
+          on:click|preventDefault={toggleExpand}
+          role="button"
+          aria-expanded={expanded}
+          aria-controls={`submenu-${item.id}`}
         >
           <span class="text-lg flex-shrink-0 {sidebarCollapsed ? '' : 'mr-3'}">{item.icon ?? item.title?.[0]}</span>
           {#if !sidebarCollapsed}
@@ -100,7 +104,7 @@
 
     <!-- Children (expandable) -->
     {#if expanded}
-      <ul class="ml-4 mt-1 space-y-1" role="menu">
+      <ul id={`submenu-${item.id}`} class="ml-4 mt-1 space-y-1" role="menu">
         {#each visibleChildren as child (child.id)}
           <svelte:self item={child} {sidebarCollapsed} />
         {/each}

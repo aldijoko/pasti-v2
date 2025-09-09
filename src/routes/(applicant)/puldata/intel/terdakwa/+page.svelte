@@ -9,22 +9,19 @@
   let search = '';
   let openCreate = false;
   let errorMsg = '';
-  let uploadInfo = '';
 
   $: filtered = rows.filter(r => {
     const q = search.trim().toLowerCase();
     if (!q) return true;
     return (
       String(r.id).includes(q) ||
-      r.submitBy?.toLowerCase().includes(q) ||
+      r.editBy?.toLowerCase().includes(q) ||
       r.nama?.toLowerCase().includes(q) ||
-      r.jk?.toLowerCase().includes(q) ||
-      r.status?.toLowerCase().includes(q) ||
+      r.alias?.toLowerCase().includes(q) ||
       r.ttl?.toLowerCase().includes(q) ||
-      r.nik?.toLowerCase().includes(q) ||
-      r.passport?.toLowerCase().includes(q) ||
-      r.tgl_berangkat?.toLowerCase().includes(q) ||
-      r.tujuan?.toLowerCase().includes(q)
+      r.alamat?.toLowerCase().includes(q) ||
+      r.jk?.toLowerCase().includes(q) ||
+      r.tuntutan?.toLowerCase().includes(q)
     );
   });
 
@@ -53,81 +50,49 @@
   }
 
   function deleteRow(id, name) {
-    if (!confirm(`Hapus data FTF \"${name}\"?`)) return;
+    if (!confirm(`Hapus data Terdakwa \"${name}\"?`)) return;
     const fd = new FormData();
     fd.set('id', String(id));
     fetch('?/delete', { method: 'POST', body: fd })
       .then(r => r.json())
       .then(res => { if (!res?.ok) alert(res?.error || 'Gagal menghapus'); else location.reload(); });
   }
-
-  async function handleUpload(e) {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    const fd = new FormData();
-    fd.set('file', file);
-    const res = await fetch('?/upload', { method: 'POST', body: fd }).then(r => r.json());
-    if (!res?.ok) uploadInfo = res?.error || 'Gagal upload'; else { uploadInfo = `Berhasil upload ${res.count} baris`; location.reload(); }
-    e.target.value = '';
-  }
 </script>
 
 <svelte:head>
-  <title>Intel - FTF</title>
+  <title>Intel - Data Terdakwa</title>
 </svelte:head>
 
 <div class="space-y-6">
   <div>
-    <h1 class="text-2xl font-bold text-gray-900">Intel - FTF</h1>
-    <p class="mt-1 text-sm text-gray-500">Foreign Terrorist Fighters.</p>
+    <h1 class="text-2xl font-bold text-gray-900">Intel - Data Terdakwa</h1>
+    <p class="mt-1 text-sm text-gray-500">Data terdakwa terkait kasus teror.</p>
   </div>
 
   <div class="bg-white rounded-lg shadow p-4 sm:p-6">
     <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
       <div>
-        <h2 class="text-lg font-semibold text-gray-900">Daftar FTF</h2>
-        <p class="text-sm text-gray-500">Manajemen data FTF</p>
+        <h2 class="text-lg font-semibold text-gray-900">Daftar Terdakwa</h2>
+        <p class="text-sm text-gray-500">Manajemen data terdakwa</p>
       </div>
       <div class="flex flex-wrap gap-2">
         <button type="button" class="inline-flex items-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500" on:click={() => openCreate = true}>Tambah Data</button>
-        <button type="button" class="inline-flex items-center rounded-md border border-gray-300 bg-white px-3 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50" on:click={() => {
-          const header = ['No','Submit By','Nama','Jenis Kelamin','Status','Tanggal Lahir','NIK','Passport','Tanggal Berangkat','Tujuan'];
-          const lines = [header.join(',')].concat(filtered.map(r => [r.id, r.submitBy, r.nama, r.jk, r.status, r.ttl, r.nik, r.passport, r.tgl_berangkat, r.tujuan].map(v => `"${String(v||'').replaceAll('"','""')}"`).join(',')));
-          const blob = new Blob([lines.join('\n')], { type: 'text/csv;charset=utf-8;' });
-          const url = URL.createObjectURL(blob);
-          const a = document.createElement('a');
-          a.href = url;
-          a.download = 'ftf.csv';
-          document.body.appendChild(a);
-          a.click();
-          document.body.removeChild(a);
-          URL.revokeObjectURL(url);
-        }}>Download CSV</button>
-        <label class="inline-flex items-center rounded-md border border-gray-300 bg-white px-3 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 cursor-pointer">
-          Upload CSV
-          <input type="file" accept=".csv" class="sr-only" on:change={handleUpload} />
-        </label>
         <input type="text" placeholder="Cari..." class="w-full sm:w-64 rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" bind:value={search} />
       </div>
     </div>
-    {#if uploadInfo}
-      <p class="mt-2 text-xs text-gray-600">{uploadInfo}</p>
-    {/if}
 
     <div class="overflow-hidden rounded-lg border border-gray-200 mt-4">
       <table class="min-w-full divide-y divide-gray-200">
         <thead class="bg-gray-50">
           <tr>
             <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">No</th>
-            <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Submit By</th>
+            <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Edit By</th>
             <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Nama</th>
-            <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Jenis Kelamin</th>
-            <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
+            <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Nama Alias</th>
             <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Tanggal Lahir</th>
-            <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">NIK</th>
-            <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Passport</th>
-            <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Tanggal Berangkat</th>
-            <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Tujuan</th>
+            <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Alamat</th>
+            <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Jenis Kelamin</th>
+            <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Tuntutan</th>
             <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Action</th>
           </tr>
         </thead>
@@ -135,15 +100,13 @@
           {#each paginated as r}
             <tr>
               <td class="px-4 py-2 text-sm text-gray-900">{r.id}</td>
-              <td class="px-4 py-2 text-sm text-gray-700">{r.submitBy}</td>
+              <td class="px-4 py-2 text-sm text-gray-700">{r.editBy}</td>
               <td class="px-4 py-2 text-sm text-gray-700">{r.nama}</td>
-              <td class="px-4 py-2 text-sm text-gray-700">{r.jk}</td>
-              <td class="px-4 py-2 text-sm text-gray-700">{r.status}</td>
+              <td class="px-4 py-2 text-sm text-gray-700">{r.alias}</td>
               <td class="px-4 py-2 text-sm text-gray-700">{r.ttl}</td>
-              <td class="px-4 py-2 text-sm text-gray-700">{r.nik}</td>
-              <td class="px-4 py-2 text-sm text-gray-700">{r.passport}</td>
-              <td class="px-4 py-2 text-sm text-gray-700">{r.tgl_berangkat}</td>
-              <td class="px-4 py-2 text-sm text-gray-700">{r.tujuan}</td>
+              <td class="px-4 py-2 text-sm text-gray-700">{r.alamat}</td>
+              <td class="px-4 py-2 text-sm text-gray-700">{r.jk}</td>
+              <td class="px-4 py-2 text-sm text-gray-700">{r.tuntutan}</td>
               <td class="px-4 py-2 text-sm text-right space-x-2">
                 <button type="button" class="text-red-600 hover:underline text-xs" on:click={() => deleteRow(r.id, r.nama)}>Delete</button>
               </td>
@@ -172,7 +135,7 @@
       <div class="absolute inset-0 bg-black/40" aria-hidden="true" on:click={() => openCreate = false}></div>
       <div role="dialog" aria-modal="true" class="relative z-10 w-full h-full sm:h-auto sm:w-full sm:max-w-2xl sm:rounded-lg bg-white shadow-lg flex flex-col">
         <div class="flex items-center justify-between px-4 py-3 border-b">
-          <h2 class="text-base font-semibold text-gray-900">Tambah Data FTF</h2>
+          <h2 class="text-base font-semibold text-gray-900">Tambah Data Terdakwa</h2>
           <button type="button" class="text-sm text-gray-600 hover:text-gray-900" on:click={() => openCreate = false}>Tutup</button>
         </div>
         <form class="px-4 py-3 overflow-y-auto flex-1 sm:max-h-[80vh] space-y-4" on:submit|preventDefault={handleCreateSubmit}>
@@ -182,12 +145,28 @@
               <input name="nama" class="mt-1 w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" required />
             </div>
             <div>
-              <label class="block text-sm font-medium text-gray-700">Negara</label>
-              <input name="negara" class="mt-1 w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" />
+              <label class="block text-sm font-medium text-gray-700">Nama Alias</label>
+              <input name="alias" class="mt-1 w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" />
             </div>
             <div>
-              <label class="block text-sm font-medium text-gray-700">Status</label>
-              <input name="status" class="mt-1 w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" />
+              <label class="block text-sm font-medium text-gray-700">Tanggal Lahir</label>
+              <input type="date" name="ttl" class="mt-1 w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" />
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700">Alamat</label>
+              <input name="alamat" class="mt-1 w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" />
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700">Jenis Kelamin</label>
+              <select name="jk" class="mt-1 w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                <option value="">—</option>
+                <option>Laki-laki</option>
+                <option>Perempuan</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700">Tuntutan</label>
+              <input name="tuntutan" class="mt-1 w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" />
             </div>
           </div>
           {#if errorMsg}

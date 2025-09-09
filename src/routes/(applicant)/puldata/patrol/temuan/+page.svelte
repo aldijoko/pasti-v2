@@ -7,14 +7,16 @@
     { key: 'daftar', label: 'Daftar Laporan', perm: 'lapinfo.daftar' },
     { key: 'rekap-konten', label: 'Rekap Konten', perm: 'lapinfo.rekapkonten' },
     { key: 'rekap-medsos', label: 'Rekap Medsos', perm: 'lapinfo.rekapmedsos' },
+    { key: 'rekap-nomorsurat', label: 'Rekap Nomor Surat', perm: 'lapinfo.rekapnomorsurat' },
+    { key: 'khusus', label: 'Laporan Khusus', perm: 'lapinfo.khusus' },
     { key: 'takedown', label: 'Laporan Takedown', perm: 'lapinfo.takedown' },
-    { key: 'khusus', label: 'Laporan Khusus', perm: 'lapinfo.khusus' }
+    { key: 'takedownold', label: 'Laporan Takedown OLD', perm: 'lapinfo.takedownold' },
   ];
 
   // Read user and query params
   $: user = $page.data.user;
   $: userPerms = user?.permissions || [];
-  $: allowedTabs = TABS.filter(t => userPerms.includes(t.perm));
+  $: allowedTabs = (user?.role === 'superadmin') ? TABS : TABS.filter(t => userPerms.includes(t.perm));
   $: currentKey = $page.url.searchParams.get('tab') || (allowedTabs[0]?.key || null);
 
   function setTab(key) {
@@ -142,6 +144,36 @@
         </section>
       {/if}
 
+      {#if currentKey === 'rekap-nomorsurat'}
+        <section class="space-y-4">
+          <h2 class="text-lg font-semibold text-gray-900">Rekap Nomor Surat</h2>
+          <div class="overflow-hidden rounded-lg border border-gray-200">
+            <table class="min-w-full divide-y divide-gray-200">
+              <thead class="bg-gray-50">
+                <tr>
+                  <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Nomor Surat</th>
+                  <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Tanggal</th>
+                  <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Jumlah Takedown</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-gray-200 bg-white">
+                <tr><td class="px-4 py-2 text-sm text-gray-900">123/ABC/2025</td><td class="px-4 py-2 text-sm text-gray-600">2025-08-15</td><td class="px-4 py-2 text-sm text-gray-600">50</td></tr>
+                <tr><td class="px-4 py-2 text-sm text-gray-900">456/DEF/2025</td><td class="px-4 py-2 text-sm text-gray-600">2025-08-20</td><td class="px-4 py-2 text-sm text-gray-600">30</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+      {/if}
+
+      {#if currentKey === 'khusus'}
+        <section class="space-y-4">
+          <h2 class="text-lg font-semibold text-gray-900">Laporan Khusus</h2>
+          <div class="bg-gray-50 border border-gray-200 rounded-md p-4">
+            <p class="text-sm text-gray-700">Tempat untuk laporan khusus/insidentil. Silakan gunakan filter untuk mempersempit pencarian.</p>
+          </div>
+        </section>
+      {/if}
+
       {#if currentKey === 'takedown'}
         <section class="space-y-4">
           <h2 class="text-lg font-semibold text-gray-900">Laporan Takedown</h2>
@@ -166,14 +198,32 @@
         </section>
       {/if}
 
-      {#if currentKey === 'khusus'}
+      {#if currentKey === 'takedownold'}
         <section class="space-y-4">
-          <h2 class="text-lg font-semibold text-gray-900">Laporan Khusus</h2>
-          <div class="bg-gray-50 border border-gray-200 rounded-md p-4">
-            <p class="text-sm text-gray-700">Tempat untuk laporan khusus/insidentil. Silakan gunakan filter untuk mempersempit pencarian.</p>
+          <h2 class="text-lg font-semibold text-gray-900">Laporan Takedown OLD</h2>
+          <div class="bg-yellow-50 border border-yellow-200 rounded-md p-4 text-sm text-yellow-800">
+            Fitur ini menampilkan daftar permintaan takedown versi lama.
+          </div>
+          <div class="overflow-hidden rounded-lg border border-gray-200">
+            <table class="min-w-full divide-y divide-gray-200">
+              <thead class="bg-gray-50">
+                <tr>
+                  <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Tanggal</th>
+                  <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Platform</th>
+                  <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-gray-200 bg-white">
+                <tr><td class="px-4 py-2 text-sm text-gray-900">2025-08-30</td><td class="px-4 py-2 text-sm text-gray-600">YouTube</td><td class="px-4 py-2 text-sm"><span class="rounded bg-blue-100 px-2 py-0.5 text-blue-800">Proses</span></td></tr>
+                <tr><td class="px-4 py-2 text-sm text-gray-900">2025-08-25</td><td class="px-4 py-2 text-sm text-gray-600">TikTok</td><td class="px-4 py-2 text-sm"><span class="rounded bg-green-100 px-2 py-0.5 text-green-800">Selesai</span></td></tr>
+              </tbody>
+            </table>
           </div>
         </section>
       {/if}
+
+
+      
     </div>
   {/if}
 </div>
@@ -181,4 +231,3 @@
 <style>
   /* Keep styles minimal; Tailwind handles layout/responsiveness */
 </style>
-

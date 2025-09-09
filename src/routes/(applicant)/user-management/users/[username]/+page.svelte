@@ -49,7 +49,7 @@
   <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
     <div>
       <nav class="text-sm text-gray-500" aria-label="Breadcrumb">
-        <a href="/user-management" class="hover:text-gray-700">User Management</a>
+        <a href="/user-management/users" class="hover:text-gray-700">Users</a>
         <span class="mx-2">/</span>
         <span class="text-gray-700">{user?.username}</span>
       </nav>
@@ -191,4 +191,3 @@
     </div>
   {/if}
 </div>
-

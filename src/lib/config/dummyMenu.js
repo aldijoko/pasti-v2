@@ -10,6 +10,11 @@ export const dummyMenu = [
     title: "Puldata",
     children: [
       {
+        id: "puldata.bdi",
+        title: "BDI",
+        path: "/puldata/bdi"
+      },
+      {
         id: "puldata.patrol",
         title: "Cyber Patrol",
         // path: "/puldata/patrol"
@@ -22,8 +27,10 @@ export const dummyMenu = [
               { id: "lapinfo.daftar", title: "Daftar Laporan" },
               { id: "lapinfo.rekapkonten", title: "Rekap Konten" },
               { id: "lapinfo.rekapmedsos", title: "Rekap Medsos" },
+              { id: "lapinfo.rekapnomorsurat", title: "Rekap Nomor Surat" },
+              { id: "lapinfo.khusus", title: "Laporan Khusus" },
               { id: "lapinfo.takedown", title: "Laporan Takedown" },
-              { id: "lapinfo.khusus", title: "Laporan Khusus" }
+              { id: "lapinfo.takedownold", title: "Laporan Takedown OLD" },  
             ]
           },
         ]
@@ -33,13 +40,23 @@ export const dummyMenu = [
         title: "Data Intel",
         children: [
           {
-            id: "puldata.intel.napi",
-            title: "Napi",
-            path: "/puldata/intel/napi",
+            id: "puldata.intel.dttot",
+            title: "DTTOT",
+            path: "/puldata/intel/dttot",
             children: [
-              { id: "intel.napi.daftar", title: "Daftar" },
-              { id: "intel.napi.rekap", title: "Rekap" },
-              { id: "intel.napi.history", title: "History" }
+              { id: "intel.dttot.daftar", title: "Daftar" },
+              { id: "intel.dttot.rekap", title: "Rekap" },
+              { id: "intel.dttot.history", title: "History" }
+            ]
+          },
+          {
+            id: "puldata.intel.terdakwa",
+            title: "Data Terdakwa",
+            path: "/puldata/intel/terdakwa",
+            children: [
+              { id: "intel.terdakwa.daftar", title: "Daftar" },
+              { id: "intel.terdakwa.rekap", title: "Rekap" },
+              { id: "intel.terdakwa.history", title: "History" }
             ]
           },
           {
@@ -53,22 +70,38 @@ export const dummyMenu = [
             ]
           },
           {
+            id: "puldata.intel.napiter",
+            title: "Napi/Tahanan",
+            path: "/puldata/intel/napiter",
+            children: [
+              { id: "intel.napiter.exist", title: "Napi/Tahanan" },
+              { id: "intel.napiter.new", title: "Napi/Tahan Baru" },
+              // { id: "intel.napiter.history", title: "History" }
+            ]
+          },
+          {
             id: "puldata.intel.penangkapan",
             title: "Penangkapan",
             path: "/puldata/intel/penangkapan",
             children: [
-              { id: "intel.penangkapan.daftar", title: "Daftar" },
-              { id: "intel.penangkapan.rekap", title: "Rekap" },
-              { id: "intel.penangkapan.history", title: "History" }
+              { id: "intel.penangkapan.exist", title: "Penangkapan" },
+              { id: "intel.penangkapan.new", title: "Penangkapan Baru" },
+              // { id: "intel.penangkapan.history", title: "History" }
             ]
-          }
+          },
         ]
       },
       {
-        id: "puldata.bdi",
-        title: "BDI",
-        path: "/puldata/bdi"
-      }
+        id: "puldata.serangan-teror",
+        title: "Serangan Teror",
+        path: "/puldata/serangan-teror",
+        children: [
+          { id: "serangan.kejadian", title: "Serangan Teror by Kejadian" },
+          { id: "serangan.orang", title: "Serangan Teror by Orang" },
+          { id: "serangan.identifikasi", title: "Identifikasi Target Teror" }
+        ]
+      },
+      
     ]
   },
   {
@@ -96,15 +129,11 @@ export const dummyMenu = [
     id: "masterdata",
     title: "Master Data",
     children: [
+      
       {
-        id: "masterdata.modusserangan",
-        title: "Master Modus Serangan",
-        path: "/masterdata/modus-serangan"
-      },
-      {
-        id: "masterdata.targetserangan",
-        title: "Master Target Serangan",
-        path: "/masterdata/target-serangan"
+        id: "masterdata.bentukpropaganda",
+        title: "Master Bentuk Propaganda",
+        path: "/masterdata/bentuk-Propaganda"
       },
       {
         id: "masterdata.jaringanteror",
@@ -112,9 +141,19 @@ export const dummyMenu = [
         path: "/masterdata/jaringan-teror"
       },
       {
-        id: "masterdata.bentukpropaganda",
-        title: "Master Bentuk Propaganda",
-        path: "/masterdata/bentuk-Propaganda"
+        id: "masterdata.jeniskonten",
+        title: "Master Jenis Konten",
+        path: "/masterdata/jenis-konten"
+      },
+      {
+        id: "masterdata.modusserangan",
+        title: "Master Modus Serangan",
+        path: "/masterdata/modus-serangan"
+      },
+      {
+        id: "masterdata.negara",
+        title: "Master Negara",
+        path: "/masterdata/negara"
       },
       {
         id: "masterdata.sumberinformasi",
@@ -122,16 +161,15 @@ export const dummyMenu = [
         path: "/masterdata/sumber-informasi"
       },
       {
-        id: "masterdata.jeniskonten",
-        title: "Master Jenis Konten",
-        path: "/masterdata/jenis-konten"
+        id: "masterdata.targetserangan",
+        title: "Master Target Serangan",
+        path: "/masterdata/target-serangan"
       },
       {
-        id: "masterdata.negara",
-        title: "Master Negara",
-        path: "/masterdata/negara"
+        id: "masterdata.upt",
+        title: "Master UPT",
+        path: "/masterdata/upt"
       },
-
     ]
   },
   {
@@ -141,18 +179,18 @@ export const dummyMenu = [
     children: [
       {
         id: "user.management.users",
-        title: "User Management",
-        path: "/user-management"
+        title: "Users",
+        path: "/user-management/users"
       },
       {
         id: "session.logs",
         title: "Session Logs",
-        path: "/session-logs"
+        path: "/user-management/session-logs"
       },
       {
         id: "all.history",
         title: "All History",
-        path: "/all-history"
+        path: "/user-management/all-history"
       }
     ]
   }

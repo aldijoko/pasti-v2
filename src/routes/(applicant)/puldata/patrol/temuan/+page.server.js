@@ -4,7 +4,9 @@ const TAB_PERMS = [
   'lapinfo.daftar',
   'lapinfo.rekapkonten',
   'lapinfo.rekapmedsos',
+  'lapinfo.rekapnomorsurat',
   'lapinfo.takedown',
+  'lapinfo.takedownold',
   'lapinfo.khusus'
 ];
 

@@ -3,9 +3,9 @@
   import { goto } from '$app/navigation';
 
   const TABS = [
-    { key: 'daftar', label: 'Daftar', perm: 'intel.penangkapan.daftar' },
-    { key: 'rekap', label: 'Rekap', perm: 'intel.penangkapan.rekap' },
-    { key: 'history', label: 'History', perm: 'intel.penangkapan.history' }
+    { key: 'exist', label: 'Penangkapan', perm: 'intel.penangkapan.exist' },
+    { key: 'new', label: 'Penangkapan Baru', perm: 'intel.penangkapan.new' },
+    // { key: 'history', label: 'History', perm: 'intel.penangkapan.history' }
   ];
 
   $: user = $page.data.user;
@@ -46,9 +46,9 @@
     <div class="bg-white rounded-b-lg shadow p-6"><p class="text-gray-600">Hubungi administrator untuk mendapatkan akses.</p></div>
   {:else}
     <div class="bg-white rounded-b-lg shadow p-4 sm:p-6">
-      {#if currentKey === 'daftar'}
+      {#if currentKey === 'exist'}
         <section class="space-y-4">
-          <h2 class="text-lg font-semibold text-gray-900">Daftar Penangkapan</h2>
+          <h2 class="text-lg font-semibold text-gray-900">Penangkapan</h2>
           <div class="overflow-hidden rounded-lg border border-gray-200">
             <table class="min-w-full divide-y divide-gray-200">
               <thead class="bg-gray-50"><tr><th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Tanggal</th><th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Nama</th><th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Lokasi</th></tr></thead>
@@ -60,23 +60,14 @@
         </section>
       {/if}
 
-      {#if currentKey === 'rekap'}
+      {#if currentKey === 'new'}
         <section class="space-y-4">
-          <h2 class="text-lg font-semibold text-gray-900">Rekap Penangkapan</h2>
+          <h2 class="text-lg font-semibold text-gray-900">Penangkapan Baru</h2>
           <div class="grid grid-cols-1 gap-4 sm:grid-cols-3">
             <div class="bg-gray-50 rounded-lg p-4"><div class="text-xs text-gray-500">Total</div><div class="mt-1 text-2xl font-bold text-gray-900">72</div></div>
             <div class="bg-gray-50 rounded-lg p-4"><div class="text-xs text-gray-500">Bulan Ini</div><div class="mt-1 text-2xl font-bold text-gray-900">6</div></div>
             <div class="bg-gray-50 rounded-lg p-4"><div class="text-xs text-gray-500">Tahun Ini</div><div class="mt-1 text-2xl font-bold text-gray-900">39</div></div>
           </div>
-        </section>
-      {/if}
-
-      {#if currentKey === 'history'}
-        <section class="space-y-4">
-          <h2 class="text-lg font-semibold text-gray-900">History Akses</h2>
-          <ul class="list-disc pl-6 text-sm text-gray-700 space-y-2">
-            <li>2025-08-29 09:10 - admin melihat rekap</li>
-          </ul>
         </section>
       {/if}
     </div>
