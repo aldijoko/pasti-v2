@@ -1,14 +1,14 @@
 import { error, redirect } from '@sveltejs/kit';
 import { listFtf, createFtf, createFtfBulk, deleteFtf } from '$lib/services/ftf.js';
 
-const TAB_PERMS = ['intel.ftf.daftar', 'intel.ftf.rekap', 'intel.ftf.history'];
+const MENU_PERM = 'puldata.intel.ftf';
 
 export const load = async ({ locals }) => {
   if (!locals.user) throw redirect(303, '/login');
   if (locals.user.role === 'superadmin') return { user: locals.user, rows: listFtf() };
   const perms = locals.user.permissions || [];
-  const hasAny = TAB_PERMS.some((p) => perms.includes(p));
-  if (!hasAny) throw error(403, 'Anda tidak memiliki akses ke menu FTF');
+  const canAccess = perms.includes(MENU_PERM);
+  if (!canAccess) throw error(403, 'Anda tidak memiliki akses ke menu FTF');
   return { user: locals.user, rows: listFtf() };
 };
 
@@ -16,7 +16,7 @@ export const actions = {
   create: async ({ request, locals }) => {
     if (!locals.user) throw redirect(303, '/login');
     const perms = locals.user.permissions || [];
-    if (locals.user.role !== 'superadmin' && !perms.includes('intel.ftf.daftar')) throw error(403, 'Forbidden');
+    if (locals.user.role !== 'superadmin' && !perms.includes(MENU_PERM)) throw error(403, 'Forbidden');
     const fd = await request.formData();
     const submitBy = locals.user.username;
     const nama = String(fd.get('nama') || '').trim();
@@ -37,7 +37,7 @@ export const actions = {
   upload: async ({ request, locals }) => {
     if (!locals.user) throw redirect(303, '/login');
     const perms = locals.user.permissions || [];
-    if (locals.user.role !== 'superadmin' && !perms.includes('intel.ftf.daftar')) throw error(403, 'Forbidden');
+    if (locals.user.role !== 'superadmin' && !perms.includes(MENU_PERM)) throw error(403, 'Forbidden');
     const fd = await request.formData();
     const file = fd.get('file');
     if (!file || typeof file === 'string') return { ok: false, error: 'File tidak ditemukan' };
@@ -72,7 +72,7 @@ export const actions = {
   delete: async ({ request, locals }) => {
     if (!locals.user) throw redirect(303, '/login');
     const perms = locals.user.permissions || [];
-    if (locals.user.role !== 'superadmin' && !perms.includes('intel.ftf.daftar')) throw error(403, 'Forbidden');
+    if (locals.user.role !== 'superadmin' && !perms.includes(MENU_PERM)) throw error(403, 'Forbidden');
     const fd = await request.formData();
     const id = Number(fd.get('id') || 0);
     try {

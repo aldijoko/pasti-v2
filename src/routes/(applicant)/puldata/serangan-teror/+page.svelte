@@ -30,8 +30,8 @@
     <p class="mt-1 text-sm text-gray-500">Analisis kejadian, pelaku, dan identifikasi target.</p>
   </div>
 
-  <div class="border-b border-gray-200 bg-white rounded-t-lg">
-    <nav class="-mb-px flex flex-wrap gap-x-6 gap-y-2 px-4 sm:px-6" aria-label="Tabs">
+  <div class="bg-white shadow rounded-lg">
+    <nav class="-mb-px flex space-x-8 px-6 border-b border-gray-200" aria-label="Tabs">
       {#if allowedTabs.length}
         {#each allowedTabs as tab}
           <button
@@ -54,7 +54,7 @@
       <p class="text-gray-600">Hubungi administrator untuk mendapatkan akses.</p>
     </div>
   {:else}
-    <div class="bg-white rounded-b-lg shadow p-4 sm:p-6 space-y-6">
+    <div class="bg-white rounded-lg shadow p-4 sm:p-6 space-y-6">
       {#if currentKey === 'kejadian'}
         <section class="space-y-4">
           <h2 class="text-lg font-semibold text-gray-900">Serangan Teror by Kejadian</h2>
@@ -109,4 +109,3 @@
     </div>
   {/if}
 </div>
-

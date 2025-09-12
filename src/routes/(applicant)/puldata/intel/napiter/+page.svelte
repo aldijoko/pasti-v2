@@ -30,8 +30,8 @@
     <p class="mt-1 text-sm text-gray-500">Data narapidana terkait.</p>
   </div>
 
-  <div class="border-b border-gray-200 bg-white rounded-t-lg">
-    <nav class="-mb-px flex flex-wrap gap-x-6 gap-y-2 px-4 sm:px-6" aria-label="Tabs">
+  <div class="bg-white shadow rounded-lg">
+    <nav class="-mb-px flex space-x-8 px-6 border-b border-gray-200" aria-label="Tabs">
       {#if allowedTabs.length}
         {#each allowedTabs as tab}
           <button type="button" on:click={() => setTab(tab.key)} class="whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm {currentKey === tab.key ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'}" aria-current={currentKey === tab.key ? 'page' : undefined}>{tab.label}</button>
@@ -45,7 +45,7 @@
   {#if !allowedTabs.length}
     <div class="bg-white rounded-b-lg shadow p-6"><p class="text-gray-600">Hubungi administrator untuk mendapatkan akses.</p></div>
   {:else}
-    <div class="bg-white rounded-b-lg shadow p-4 sm:p-6">
+    <div class="bg-white rounded-lg shadow p-4 sm:p-6">
       {#if currentKey === 'exist'}
         <section class="space-y-4">
           <h2 class="text-lg font-semibold text-gray-900">Napi / Tahanan</h2>
@@ -84,4 +84,3 @@
     </div>
   {/if}
 </div>
-

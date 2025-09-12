@@ -1,23 +1,38 @@
 <script >
-  
-  let activeTab = 'nik';
+  import { page } from '$app/stores';
+  import { goto } from '$app/navigation';
+  let activeTab = 'v2-nik';
   let searchQuery = '';
   let searchResults = [];
   let isLoading = false;
 
   const tabs = [
-    { id: 'nik', name: 'NIK', icon: '🆔', description: 'Pencarian berdasarkan NIK' },
-    { id: 'kk', name: 'Kartu Keluarga', icon: '👨‍👩‍👧‍👦', description: 'Data kartu keluarga' },
-    { id: 'akta', name: 'Akta', icon: '📄', description: 'Data akta kelahiran' },
-    { id: 'domisili', name: 'Domisili', icon: '🏠', description: 'Data domisili penduduk' }
+    { id: 'v2-nik', name: '[V2]Pencarian NIK', icon: '🆔', description: 'Pencarian NIK versi 2' },
+    { id: 'v2-kombinasi', name: '[V2]Pencarian Kombinasi', icon: '🔎', description: 'Pencarian kombinasi multi parameter' },
+    { id: 'fr', name: 'Face Recognation', icon: '👤', description: 'Pencocokan wajah ke data' },
+    { id: 'verifikasi-ektp', name: 'Verifikasi EKTP', icon: '✅', description: 'Verifikasi data EKTP' },
+    { id: 'v1-nik', name: '[V1]Pencarian NIK', icon: '🆔', description: 'Pencarian NIK versi 1 (legacy)' }
   ];
 
   const mockData = {
-    nik: [
+    'v2-nik': [
       { id: 1, nik: '3171234567890123', name: 'John Doe', placeOfBirth: 'Jakarta', dateOfBirth: '1990-05-15', address: 'Jl. Sudirman No. 123', status: 'Active' },
       { id: 2, nik: '3171234567890124', name: 'Jane Smith', placeOfBirth: 'Bandung', dateOfBirth: '1992-08-20', address: 'Jl. Thamrin No. 456', status: 'Active' }
     ]
   };
+
+  // Sync active tab with ?tab param
+  $: page.subscribe(($page) => {
+    const t = $page.url.searchParams.get('tab');
+    if (t) activeTab = t;
+  });
+
+  function setTab(id) {
+    activeTab = id;
+    const params = new URLSearchParams($page.url.searchParams);
+    params.set('tab', id);
+    goto(`?${params.toString()}`, { keepfocus: true, noScroll: true, replaceState: true });
+  }
 
   function handleSearch() {
     if (!searchQuery.trim()) return;
@@ -55,7 +70,7 @@
       <nav class="-mb-px flex space-x-8 px-6" aria-label="Tabs">
         {#each tabs as tab}
           <button
-            on:click={() => activeTab = tab.id}
+            on:click={() => setTab(tab.id)}
             class="whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm {activeTab === tab.id ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'}"
           >
             <span class="mr-2">{tab.icon}</span>
@@ -67,11 +82,11 @@
 
     <div class="p-6">
       <!-- Tab Content -->
-      {#if activeTab === 'nik'}
+      {#if activeTab === 'v2-nik'}
         <div class="space-y-4">
           <div>
-            <h3 class="text-lg font-medium text-gray-900">Pencarian NIK</h3>
-            <p class="text-sm text-gray-500">Cari data penduduk berdasarkan Nomor Induk Kependudukan</p>
+            <h3 class="text-lg font-medium text-gray-900">[V2] Pencarian NIK</h3>
+            <p class="text-sm text-gray-500">Cari data penduduk berdasarkan Nomor Induk Kependudukan (versi 2)</p>
           </div>
 
           <div class="grid grid-cols-1 gap-4 sm:grid-cols-3">
@@ -144,45 +159,69 @@
           {/if}
         </div>
 
-      {:else if activeTab === 'kk'}
+      {:else if activeTab === 'v2-kombinasi'}
         <div class="space-y-4">
-          <h3 class="text-lg font-medium text-gray-900">Data Kartu Keluarga</h3>
-          <p class="text-sm text-gray-500">Informasi kartu keluarga</p>
-          
-          <div class="bg-white shadow rounded-lg p-6 text-center">
-            <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-            </svg>
-            <h3 class="mt-2 text-sm font-medium text-gray-900">Kartu Keluarga</h3>
-            <p class="mt-1 text-sm text-gray-500">Fitur data kartu keluarga sedang dalam pengembangan.</p>
+          <h3 class="text-lg font-medium text-gray-900">[V2] Pencarian Kombinasi</h3>
+          <p class="text-sm text-gray-500">Cari berdasarkan kombinasi parameter (NIK / Nama / Tgl Lahir)</p>
+          <div class="grid grid-cols-1 gap-4 sm:grid-cols-3">
+            <div>
+              <label class="block text-sm font-medium text-gray-700">NIK (opsional)</label>
+              <input class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm" placeholder="16 digit" />
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700">Nama (opsional)</label>
+              <input class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm" placeholder="Nama lengkap" />
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700">Tanggal Lahir (opsional)</label>
+              <input type="date" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm" />
+            </div>
+          </div>
+          <div>
+            <button class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700">Cari</button>
           </div>
         </div>
 
-      {:else if activeTab === 'akta'}
+      {:else if activeTab === 'fr'}
         <div class="space-y-4">
-          <h3 class="text-lg font-medium text-gray-900">Data Akta Kelahiran</h3>
-          <p class="text-sm text-gray-500">Informasi akta kelahiran</p>
-          
-          <div class="bg-white shadow rounded-lg p-6 text-center">
-            <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-            </svg>
-            <h3 class="mt-2 text-sm font-medium text-gray-900">Akta Kelahiran</h3>
-            <p class="mt-1 text-sm text-gray-500">Fitur data akta kelahiran sedang dalam pengembangan.</p>
+          <h3 class="text-lg font-medium text-gray-900">Face Recognation</h3>
+          <p class="text-sm text-gray-500">Unggah foto wajah untuk pencocokan terhadap database</p>
+          <div class="bg-white shadow rounded-lg p-6 space-y-3">
+            <input type="file" accept="image/*" class="block w-full text-sm text-gray-600" />
+            <button class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700">Proses</button>
           </div>
         </div>
 
-      {:else if activeTab === 'domisili'}
+      {:else if activeTab === 'verifikasi-ektp'}
         <div class="space-y-4">
-          <h3 class="text-lg font-medium text-gray-900">Data Domisili</h3>
-          <p class="text-sm text-gray-500">Informasi domisili penduduk</p>
-          
-          <div class="bg-white shadow rounded-lg p-6 text-center">
-            <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
-            </svg>
-            <h3 class="mt-2 text-sm font-medium text-gray-900">Domisili</h3>
-            <p class="mt-1 text-sm text-gray-500">Fitur data domisili sedang dalam pengembangan.</p>
+          <h3 class="text-lg font-medium text-gray-900">Verifikasi EKTP</h3>
+          <p class="text-sm text-gray-500">Verifikasi keaslian dan kecocokan data EKTP</p>
+          <div class="grid grid-cols-1 gap-4 sm:grid-cols-3">
+            <div class="sm:col-span-2">
+              <label class="block text-sm font-medium text-gray-700">NIK</label>
+              <input class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm" placeholder="Masukkan NIK" />
+            </div>
+            <div class="flex items-end">
+              <button class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700">Verifikasi</button>
+            </div>
+          </div>
+        </div>
+
+      {:else if activeTab === 'v1-nik'}
+        <div class="space-y-4">
+          <div>
+            <h3 class="text-lg font-medium text-gray-900">[V1] Pencarian NIK</h3>
+            <p class="text-sm text-gray-500">Versi lama pencarian NIK (kompatibilitas)</p>
+          </div>
+          <div class="grid grid-cols-1 gap-4 sm:grid-cols-3">
+            <div class="sm:col-span-2">
+              <label class="block text-sm font-medium text-gray-700">Nomor NIK</label>
+              <input class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm" placeholder="16 digit" maxlength="16" />
+            </div>
+            <div class="flex items-end space-x-3">
+              <button class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700">Cari</button>
+              <button class="bg-gray-300 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-400">Clear</button>
+            </div>
           </div>
         </div>
       {/if}
@@ -272,4 +311,3 @@
     </div>
   </div>
 </div>
-

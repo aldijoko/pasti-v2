@@ -1,46 +1,38 @@
 <script>
   import { page } from '$app/stores';
   import { goto } from '$app/navigation';
+  import { browser } from '$app/environment';
+  import Pagination from '$lib/components/Pagination.svelte';
   export let data;
 
   $: user = $page.data.user;
-  $: rows = data?.rows || [];
+  $: items = data?.items || data?.rows || [];
+  $: total = data?.total || (data?.rows ? data.rows.length : 0);
+  $: pageNum = data?.page || 1;
+  $: size = data?.size || 5;
 
   let search = '';
   let openCreate = false;
   let errorMsg = '';
 
-  $: filtered = rows.filter(r => {
-    const q = search.trim().toLowerCase();
-    if (!q) return true;
-    return (
-      String(r.id).includes(q) ||
-      r.editBy?.toLowerCase().includes(q) ||
-      r.nama?.toLowerCase().includes(q) ||
-      r.alias?.toLowerCase().includes(q) ||
-      r.ttl?.toLowerCase().includes(q) ||
-      r.alamat?.toLowerCase().includes(q) ||
-      r.jk?.toLowerCase().includes(q) ||
-      r.tuntutan?.toLowerCase().includes(q)
-    );
-  });
-
-  let currentPage = 1;
-  const pageSize = 5;
   $: page.subscribe(($page) => {
-    const pageParam = parseInt($page.url.searchParams.get('page'));
-    currentPage = isNaN(pageParam) ? 1 : pageParam;
+    const q = $page.url.searchParams.get('search') || '';
+    const p = parseInt($page.url.searchParams.get('page'));
+    const s = parseInt($page.url.searchParams.get('size'));
+    search = q;
+    if (!Number.isNaN(p)) pageNum = p;
+    if (!Number.isNaN(s)) size = s;
   });
-  $: totalPages = Math.ceil(filtered.length / pageSize) || 1;
-  $: currentPage = Math.min(Math.max(1, currentPage), totalPages);
-  $: paginated = filtered.slice((currentPage - 1) * pageSize, currentPage * pageSize);
 
-  function changePage(p) {
-    currentPage = p;
+  function updateQuery(updates) {
+    if (!browser) return;
     const params = new URLSearchParams(location.search);
-    params.set('page', String(p));
+    if (updates.page != null) params.set('page', String(updates.page));
+    if (updates.size != null) params.set('size', String(updates.size));
+    if (updates.search != null) params.set('search', String(updates.search));
     goto(`?${params.toString()}`, { keepfocus: true, noScroll: true, replaceState: true });
   }
+  function changePage(p) { updateQuery({ page: p }); }
 
   async function handleCreateSubmit(e) {
     e.preventDefault();
@@ -76,38 +68,38 @@
         <p class="text-sm text-gray-500">Manajemen data terdakwa</p>
       </div>
       <div class="flex flex-wrap gap-2">
-        <button type="button" class="inline-flex items-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500" on:click={() => openCreate = true}>Tambah Data</button>
-        <input type="text" placeholder="Cari..." class="w-full sm:w-64 rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" bind:value={search} />
+        <button type="button" class="btn btn-primary" on:click={() => openCreate = true}>Tambah Data</button>
+        <input type="text" placeholder="Cari..." class="w-full sm:w-64 rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" bind:value={search} on:change={() => updateQuery({ page: 1, search })} />
       </div>
     </div>
 
-    <div class="overflow-hidden rounded-lg border border-gray-200 mt-4">
-      <table class="min-w-full divide-y divide-gray-200">
-        <thead class="bg-gray-50">
+    <div class="table-wrap mt-4">
+      <table class="table">
+        <thead class="table-head">
           <tr>
-            <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">No</th>
-            <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Edit By</th>
-            <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Nama</th>
-            <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Nama Alias</th>
-            <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Tanggal Lahir</th>
-            <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Alamat</th>
-            <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Jenis Kelamin</th>
-            <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Tuntutan</th>
-            <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Action</th>
+            <th class="th">No</th>
+            <th class="th">Edit By</th>
+            <th class="th">Nama</th>
+            <th class="th">Nama Alias</th>
+            <th class="th">Tanggal Lahir</th>
+            <th class="th">Alamat</th>
+            <th class="th">Jenis Kelamin</th>
+            <th class="th">Tuntutan</th>
+            <th class="th">Action</th>
           </tr>
         </thead>
-        <tbody class="divide-y divide-gray-200 bg-white">
-          {#each paginated as r}
+        <tbody class="tbody">
+          {#each items as r}
             <tr>
-              <td class="px-4 py-2 text-sm text-gray-900">{r.id}</td>
-              <td class="px-4 py-2 text-sm text-gray-700">{r.editBy}</td>
-              <td class="px-4 py-2 text-sm text-gray-700">{r.nama}</td>
-              <td class="px-4 py-2 text-sm text-gray-700">{r.alias}</td>
-              <td class="px-4 py-2 text-sm text-gray-700">{r.ttl}</td>
-              <td class="px-4 py-2 text-sm text-gray-700">{r.alamat}</td>
-              <td class="px-4 py-2 text-sm text-gray-700">{r.jk}</td>
-              <td class="px-4 py-2 text-sm text-gray-700">{r.tuntutan}</td>
-              <td class="px-4 py-2 text-sm text-right space-x-2">
+              <td class="td text-gray-900">{r.id}</td>
+              <td class="td">{r.editBy}</td>
+              <td class="td">{r.nama}</td>
+              <td class="td">{r.alias}</td>
+              <td class="td">{r.ttl}</td>
+              <td class="td">{r.alamat}</td>
+              <td class="td">{r.jk}</td>
+              <td class="td">{r.tuntutan}</td>
+              <td class="td-right space-x-2">
                 <button type="button" class="text-red-600 hover:underline text-xs" on:click={() => deleteRow(r.id, r.nama)}>Delete</button>
               </td>
             </tr>
@@ -116,18 +108,9 @@
       </table>
     </div>
 
-    {#if totalPages > 1}
-      <div class="mt-4 flex flex-wrap items-center justify-between gap-2">
-        <p class="text-sm text-gray-500">Showing Page {currentPage} of {totalPages}</p>
-        <div class="flex flex-wrap items-center gap-1">
-          <button type="button" class="px-2 py-1 text-sm rounded border border-gray-300 hover:bg-gray-100 disabled:opacity-50" on:click={() => changePage(currentPage - 1)} disabled={currentPage === 1}>Prev</button>
-          {#each Array(totalPages).fill(0).map((_, i) => i + 1) as p}
-            <button type="button" class="px-3 py-1 text-sm rounded-md border border-gray-300 hover:bg-gray-100 {p === currentPage ? 'bg-indigo-600 text-white border-indigo-600' : 'text-gray-700'}" on:click={() => changePage(p)}>{p}</button>
-          {/each}
-          <button type="button" class="px-2 py-1 text-sm rounded border border-gray-300 hover:bg-gray-100 disabled:opacity-50" on:click={() => changePage(currentPage + 1)} disabled={currentPage === totalPages}>Next</button>
-        </div>
-      </div>
-    {/if}
+    <div class="mt-4">
+      <Pagination page={pageNum} pageSize={size} total={total} useLinks={true} />
+    </div>
   </div>
 
   {#if openCreate}
@@ -173,8 +156,8 @@
             <p class="text-sm text-red-600">{errorMsg}</p>
           {/if}
           <div class="pt-2 flex items-center justify-end gap-2">
-            <button type="button" class="px-3 py-2 text-sm rounded-md border border-gray-300 hover:bg-gray-100" on:click={() => openCreate = false}>Batal</button>
-            <button type="submit" class="px-4 py-2 text-sm rounded-md bg-indigo-600 text-white hover:bg-indigo-500">Simpan</button>
+            <button type="button" class="btn btn-outline" on:click={() => openCreate = false}>Batal</button>
+            <button type="submit" class="btn btn-primary">Simpan</button>
           </div>
         </form>
       </div>

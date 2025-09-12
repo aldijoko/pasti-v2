@@ -4,3 +4,40 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 
+@layer components {
+  /* Buttons */
+  .btn {
+    @apply inline-flex items-center justify-center rounded-md px-3 py-2 text-sm font-semibold shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+  .btn-primary { @apply bg-indigo-600 text-white hover:bg-indigo-500 focus:ring-indigo-600; }
+  .btn-secondary { @apply bg-gray-800 text-white hover:bg-gray-700 focus:ring-gray-800; }
+  .btn-outline { @apply border border-gray-300 bg-white text-gray-700 hover:bg-gray-50 focus:ring-gray-300; }
+  .btn-danger { @apply bg-red-600 text-white hover:bg-red-500 focus:ring-red-600; }
+  .btn-ghost { @apply text-gray-700 hover:text-gray-900 hover:bg-gray-100; }
+  .btn-success { @apply bg-green-600 text-white hover:bg-green-500 focus:ring-green-600; }
+  .btn-sm { @apply px-2 py-1 text-xs; }
+  .btn-lg { @apply px-4 py-2 text-base; }
+
+  /* Badges */
+  .badge { @apply inline-flex items-center rounded px-2 py-0.5 text-xs font-medium; }
+  .badge-green { @apply bg-green-100 text-green-800; }
+  .badge-red { @apply bg-red-100 text-red-800; }
+  .badge-yellow { @apply bg-yellow-100 text-yellow-800; }
+  .badge-gray { @apply bg-gray-100 text-gray-800; }
+
+  /* Tables */
+  .table-wrap { @apply overflow-hidden rounded-lg border border-gray-200; }
+  .table { @apply min-w-full divide-y divide-gray-200; }
+  .table-head { @apply bg-gray-50; }
+  .th { @apply px-4 py-2 text-left text-xs font-medium uppercase tracking-wider text-gray-500; }
+  .td { @apply px-4 py-2 text-sm text-gray-700; }
+  .td-right { @apply px-4 py-2 text-sm text-right; }
+  .tbody { @apply divide-y divide-gray-200 bg-white; }
+
+  /* Pagination */
+  .pagination { @apply flex flex-wrap items-center gap-1; }
+  .page-btn { @apply px-3 py-1 text-sm rounded-md border border-gray-300 hover:bg-gray-100 text-gray-700; }
+  .page-btn-icon { @apply px-2 py-1 text-sm rounded border border-gray-300 hover:bg-gray-100; }
+  .page-btn-active { @apply bg-indigo-600 text-white border-indigo-600; }
+}
+

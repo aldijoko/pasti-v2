@@ -5,9 +5,6 @@
   // Define tabs and required permissions
   const TABS = [
     { key: 'daftar', label: 'Daftar Laporan', perm: 'lapinfo.daftar' },
-    { key: 'rekap-konten', label: 'Rekap Konten', perm: 'lapinfo.rekapkonten' },
-    { key: 'rekap-medsos', label: 'Rekap Medsos', perm: 'lapinfo.rekapmedsos' },
-    { key: 'rekap-nomorsurat', label: 'Rekap Nomor Surat', perm: 'lapinfo.rekapnomorsurat' },
     { key: 'khusus', label: 'Laporan Khusus', perm: 'lapinfo.khusus' },
     { key: 'takedown', label: 'Laporan Takedown', perm: 'lapinfo.takedown' },
     { key: 'takedownold', label: 'Laporan Takedown OLD', perm: 'lapinfo.takedownold' },
@@ -38,8 +35,8 @@
   </div>
 
   <!-- Tabs -->
-  <div class="border-b border-gray-200 bg-white rounded-t-lg">
-    <nav class="-mb-px flex flex-wrap gap-x-6 gap-y-2 px-4 sm:px-6" aria-label="Tabs">
+  <div class="bg-white shadow rounded-lg">
+    <nav class="-mb-px flex space-x-8 px-6 border-b border-gray-200" aria-label="Tabs">
       {#if allowedTabs.length}
         {#each allowedTabs as tab}
           <button
@@ -66,7 +63,7 @@
       <p class="text-gray-600">Hubungi administrator untuk mendapatkan akses yang diperlukan.</p>
     </div>
   {:else}
-    <div class="bg-white rounded-b-lg shadow p-4 sm:p-6">
+    <div class="bg-white rounded-lg shadow p-4 sm:p-6">
       {#if currentKey === 'daftar'}
         <section class="space-y-4">
           <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">

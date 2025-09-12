@@ -1,31 +1,50 @@
 <script >
-  
-  let activeTab = 'nopol';
+  import { page } from '$app/stores';
+  import { goto } from '$app/navigation';
+  let activeTab = 'nopol-eri';
   let searchQuery = '';
   let searchResults = [];
   let isLoading = false;
 
   const tabs = [
-    { id: 'nopol', name: 'Nopol', icon: '🚗', description: 'Pencarian nomor polisi kendaraan' },
-    { id: 'etle', name: 'ETLE', icon: '📸', description: 'Sistem tilang elektronik' },
-    { id: 'sim', name: 'SIM', icon: '🪪', description: 'Informasi surat izin mengemudi' },
+    { id: 'nopol-eri', name: 'Nopol By Eri', icon: '🚗', description: 'Pencarian nomor polisi via ERI' },
+    { id: 'sim-license', name: 'SIM [By License]', icon: '🪪', description: 'Cari SIM berdasarkan nomor' },
+    { id: 'sim-name', name: 'SIM [By Name]', icon: '🧑‍💼', description: 'Cari SIM berdasarkan nama' },
+    { id: 'license', name: 'License', icon: '📄', description: 'Informasi kategori lisensi berkendara' },
     { id: 'history', name: 'History', icon: '📋', description: 'Riwayat pencarian dan transaksi' }
   ];
 
   const mockData = {
-    nopol: [
+    'nopol-eri': [
       { id: 1, nopol: 'B 1234 ABC', jenis: 'Mobil', merk: 'Toyota', model: 'Avanza', tahun: '2020', status: 'Aktif' },
       { id: 2, nopol: 'B 5678 DEF', jenis: 'Motor', merk: 'Honda', model: 'Vario', tahun: '2019', status: 'Aktif' }
     ],
-    etle: [
-      { id: 1, nopol: 'B 1234 ABC', lokasi: 'Jl. Sudirman', tanggal: '2024-01-15', pelanggaran: 'Melanggar lampu merah', denda: 'Rp 500.000' },
-      { id: 2, nopol: 'B 5678 DEF', lokasi: 'Jl. Thamrin', tanggal: '2024-01-14', pelanggaran: 'Kecepatan berlebihan', denda: 'Rp 750.000' }
-    ],
-    sim: [
+    'sim-license': [
       { id: 1, nomor: '1234567890', nama: 'John Doe', jenis: 'A', berlaku: '2025-12-31', status: 'Aktif' },
       { id: 2, nomor: '0987654321', nama: 'Jane Smith', jenis: 'B1', berlaku: '2026-06-30', status: 'Aktif' }
+    ],
+    'sim-name': [
+      { id: 1, nomor: '2233445566', nama: 'Budi Santoso', jenis: 'C', berlaku: '2026-01-10', status: 'Aktif' },
+      { id: 2, nomor: '6677889900', nama: 'Siti Aminah', jenis: 'A', berlaku: '2027-03-15', status: 'Aktif' }
+    ],
+    license: [
+      { id: 1, kategori: 'SIM A', deskripsi: 'Kendaraan roda 4 pribadi', masa: '5 tahun' },
+      { id: 2, kategori: 'SIM C', deskripsi: 'Sepeda motor', masa: '5 tahun' }
     ]
   };
+
+  // Sync active tab with ?tab
+  $: page.subscribe(($page) => {
+    const t = $page.url.searchParams.get('tab');
+    if (t) activeTab = t;
+  });
+
+  function setTab(id) {
+    activeTab = id;
+    const params = new URLSearchParams($page.url.searchParams);
+    params.set('tab', id);
+    goto(`?${params.toString()}`, { keepfocus: true, noScroll: true, replaceState: true });
+  }
 
   function handleSearch() {
     if (!searchQuery.trim()) return;
@@ -52,7 +71,6 @@
   <title>DIVTIK - PASTI</title>
 </svelte:head>
 
-<!-- <DashboardLayout> -->
   <div class="space-y-6">
     <!-- Page Header -->
     <div>
@@ -68,7 +86,7 @@
         <nav class="-mb-px flex space-x-8 px-6" aria-label="Tabs">
           {#each tabs as tab}
             <button
-              on:click={() => activeTab = tab.id}
+              on:click={() => setTab(tab.id)}
               class="whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm {activeTab === tab.id ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'}"
             >
               <span class="mr-2">{tab.icon}</span>
@@ -80,7 +98,7 @@
 
       <div class="p-6">
         <!-- Tab Content -->
-        {#if activeTab === 'nopol'}
+        {#if activeTab === 'nopol-eri'}
           <div class="space-y-4">
             <div class="flex items-center justify-between">
               <div>
@@ -89,7 +107,7 @@
               </div>
               <button
                 on:click={exportData}
-                class="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
+                class="btn btn-success"
               >
                 Export Data
               </button>
@@ -110,7 +128,7 @@
                 <button
                   on:click={handleSearch}
                   disabled={isLoading || !searchQuery.trim()}
-                  class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                  class="btn btn-primary disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {#if isLoading}
                     <svg class="animate-spin -ml-1 mr-2 h-4 w-4 text-white inline" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
@@ -122,7 +140,7 @@
                 </button>
                 <button
                   on:click={clearSearch}
-                  class="bg-gray-300 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
+                  class="btn btn-outline"
                 >
                   Clear
                 </button>
@@ -131,25 +149,25 @@
 
             {#if searchResults.length > 0}
               <div class="bg-white shadow rounded-lg overflow-hidden">
-                <table class="min-w-full divide-y divide-gray-200">
-                  <thead class="bg-gray-50">
+                <table class="table">
+                  <thead class="table-head">
                     <tr>
-                      <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nopol</th>
-                      <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Jenis</th>
-                      <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Merk/Model</th>
-                      <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tahun</th>
-                      <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                      <th class="th">Nopol</th>
+                      <th class="th">Jenis</th>
+                      <th class="th">Merk/Model</th>
+                      <th class="th">Tahun</th>
+                      <th class="th">Status</th>
                     </tr>
                   </thead>
-                  <tbody class="bg-white divide-y divide-gray-200">
+                  <tbody class="tbody">
                     {#each searchResults as result}
                       <tr class="hover:bg-gray-50">
-                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{result.nopol}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{result.jenis}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{result.merk} {result.model}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{result.tahun}</td>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                          <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">
+                        <td class="td text-gray-900">{result.nopol}</td>
+                        <td class="td">{result.jenis}</td>
+                        <td class="td">{result.merk} {result.model}</td>
+                        <td class="td">{result.tahun}</td>
+                        <td class="td">
+                          <span class="badge badge-green">
                             {result.status}
                           </span>
                         </td>
@@ -161,30 +179,30 @@
             {/if}
           </div>
 
-        {:else if activeTab === 'etle'}
+        {:else if activeTab === 'sim-license'}
           <div class="space-y-4">
-            <h3 class="text-lg font-medium text-gray-900">Data ETLE</h3>
-            <p class="text-sm text-gray-500">Informasi tilang elektronik</p>
+            <h3 class="text-lg font-medium text-gray-900">SIM [By License]</h3>
+            <p class="text-sm text-gray-500">Cari SIM berdasarkan nomor lisensi</p>
             
             <div class="bg-white shadow rounded-lg overflow-hidden">
-              <table class="min-w-full divide-y divide-gray-200">
-                <thead class="bg-gray-50">
+              <table class="table">
+                <thead class="table-head">
                   <tr>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nopol</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Lokasi</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tanggal</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Pelanggaran</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Denda</th>
+                    <th class="th">No. SIM</th>
+                    <th class="th">Nama</th>
+                    <th class="th">Jenis</th>
+                    <th class="th">Berlaku</th>
+                    <th class="th">Status</th>
                   </tr>
                 </thead>
-                <tbody class="bg-white divide-y divide-gray-200">
-                  {#each mockData.etle as result}
+                <tbody class="tbody">
+                  {#each mockData['sim-license'] as result}
                     <tr class="hover:bg-gray-50">
-                      <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{result.nopol}</td>
-                      <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{result.lokasi}</td>
-                      <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{result.tanggal}</td>
-                      <td class="px-6 py-4 text-sm text-gray-500">{result.pelanggaran}</td>
-                      <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{result.denda}</td>
+                      <td class="td text-gray-900">{result.nomor}</td>
+                      <td class="td">{result.nama}</td>
+                      <td class="td">{result.jenis}</td>
+                      <td class="td">{result.berlaku}</td>
+                      <td class="td">{result.status}</td>
                     </tr>
                   {/each}
                 </tbody>
@@ -192,34 +210,61 @@
             </div>
           </div>
 
-        {:else if activeTab === 'sim'}
+        {:else if activeTab === 'sim-name'}
           <div class="space-y-4">
-            <h3 class="text-lg font-medium text-gray-900">Data SIM</h3>
-            <p class="text-sm text-gray-500">Informasi surat izin mengemudi</p>
+            <h3 class="text-lg font-medium text-gray-900">SIM [By Name]</h3>
+            <p class="text-sm text-gray-500">Cari SIM berdasarkan nama</p>
             
             <div class="bg-white shadow rounded-lg overflow-hidden">
-              <table class="min-w-full divide-y divide-gray-200">
-                <thead class="bg-gray-50">
+              <table class="table">
+                <thead class="table-head">
                   <tr>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nomor SIM</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nama</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Jenis</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Berlaku</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                    <th class="th">Nomor SIM</th>
+                    <th class="th">Nama</th>
+                    <th class="th">Jenis</th>
+                    <th class="th">Berlaku</th>
+                    <th class="th">Status</th>
                   </tr>
                 </thead>
-                <tbody class="bg-white divide-y divide-gray-200">
-                  {#each mockData.sim as result}
+                <tbody class="tbody">
+                  {#each mockData['sim-name'] as result}
                     <tr class="hover:bg-gray-50">
-                      <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{result.nomor}</td>
-                      <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{result.nama}</td>
-                      <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{result.jenis}</td>
-                      <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{result.berlaku}</td>
-                      <td class="px-6 py-4 whitespace-nowrap">
-                        <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">
+                      <td class="td text-gray-900">{result.nomor}</td>
+                      <td class="td text-gray-900">{result.nama}</td>
+                      <td class="td">{result.jenis}</td>
+                      <td class="td">{result.berlaku}</td>
+                      <td class="td">
+                        <span class="badge badge-green">
                           {result.status}
                         </span>
                       </td>
+                    </tr>
+                  {/each}
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+        {:else if activeTab === 'license'}
+          <div class="space-y-4">
+            <h3 class="text-lg font-medium text-gray-900">License</h3>
+            <p class="text-sm text-gray-500">Informasi kategori lisensi berkendara</p>
+
+            <div class="bg-white shadow rounded-lg overflow-hidden">
+              <table class="table">
+                <thead class="table-head">
+                  <tr>
+                    <th class="th">Kategori</th>
+                    <th class="th">Deskripsi</th>
+                    <th class="th">Masa Berlaku</th>
+                  </tr>
+                </thead>
+                <tbody class="tbody">
+                  {#each mockData.license as l}
+                    <tr>
+                      <td class="td text-gray-900">{l.kategori}</td>
+                      <td class="td">{l.deskripsi}</td>
+                      <td class="td">{l.masa}</td>
                     </tr>
                   {/each}
                 </tbody>
@@ -328,4 +373,3 @@
       </div>
     </div>
   </div>
-<!-- </DashboardLayout> -->

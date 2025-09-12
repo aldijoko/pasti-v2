@@ -1,5 +1,6 @@
 <script >
-  
+  import { page } from '$app/stores';
+  import { goto } from '$app/navigation';
   let activeTab = 'search';
   let searchQuery = '';
   let searchResults = [];
@@ -21,6 +22,19 @@
       { id: 2, service: 'Device Info', balance: 500, used: 75, remaining: 425, lastUpdate: '2024-01-15' }
     ]
   };
+
+  // Sync active tab with ?tab
+  $: page.subscribe(($page) => {
+    const t = $page.url.searchParams.get('tab');
+    if (t) activeTab = t;
+  });
+
+  function setTab(id) {
+    activeTab = id;
+    const params = new URLSearchParams($page.url.searchParams);
+    params.set('tab', id);
+    goto(`?${params.toString()}`, { keepfocus: true, noScroll: true, replaceState: true });
+  }
 
   function handleSearch() {
     if (!searchQuery.trim()) return;
@@ -63,7 +77,7 @@
         <nav class="-mb-px flex space-x-8 px-6" aria-label="Tabs">
           {#each tabs as tab}
             <button
-              on:click={() => activeTab = tab.id}
+              on:click={() => setTab(tab.id)}
               class="whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm {activeTab === tab.id ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'}"
             >
               <span class="mr-2">{tab.icon}</span>
@@ -300,4 +314,3 @@
       </div>
     </div>
   </div>
-

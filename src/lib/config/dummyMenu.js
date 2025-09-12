@@ -25,9 +25,6 @@ export const dummyMenu = [
             path: "/puldata/patrol/temuan",
             children: [
               { id: "lapinfo.daftar", title: "Daftar Laporan" },
-              { id: "lapinfo.rekapkonten", title: "Rekap Konten" },
-              { id: "lapinfo.rekapmedsos", title: "Rekap Medsos" },
-              { id: "lapinfo.rekapnomorsurat", title: "Rekap Nomor Surat" },
               { id: "lapinfo.khusus", title: "Laporan Khusus" },
               { id: "lapinfo.takedown", title: "Laporan Takedown" },
               { id: "lapinfo.takedownold", title: "Laporan Takedown OLD" },  
@@ -43,31 +40,19 @@ export const dummyMenu = [
             id: "puldata.intel.dttot",
             title: "DTTOT",
             path: "/puldata/intel/dttot",
-            children: [
-              { id: "intel.dttot.daftar", title: "Daftar" },
-              { id: "intel.dttot.rekap", title: "Rekap" },
-              { id: "intel.dttot.history", title: "History" }
-            ]
+            
           },
           {
             id: "puldata.intel.terdakwa",
             title: "Data Terdakwa",
             path: "/puldata/intel/terdakwa",
-            children: [
-              { id: "intel.terdakwa.daftar", title: "Daftar" },
-              { id: "intel.terdakwa.rekap", title: "Rekap" },
-              { id: "intel.terdakwa.history", title: "History" }
-            ]
+            
           },
           {
             id: "puldata.intel.ftf",
             title: "FTF",
             path: "/puldata/intel/ftf",
-            children: [
-              { id: "intel.ftf.daftar", title: "Daftar" },
-              { id: "intel.ftf.rekap", title: "Rekap" },
-              { id: "intel.ftf.history", title: "History" }
-            ]
+            
           },
           {
             id: "puldata.intel.napiter",
@@ -117,13 +102,60 @@ export const dummyMenu = [
         id: "olahdata.hasillaporan",
         title: "Hasil Laporan",
         path: "/olahdata/hasillaporan"
+      },
+      {
+        id: "olahdata.rekap",
+        title: "Rekap Data",
+        path: "/olahdata/rekap-data"
       }
     ]
   },
   {
     id: "profiling",
     title: "Profiling",
-    path: "/profiling"
+    children: [
+      { id: "profiling.kependudukan", title: "Kependudukan", path: "/profiling/kependudukan",
+        children: [
+          { id: "profiling.kependudukan.v2nik", title: "[V2]Pencarian NIK", path: "/profiling/kependudukan?tab=v2-nik" },
+          { id: "profiling.kependudukan.v2kombinasi", title: "[V2]Pencarian Kombinasi", path: "/profiling/kependudukan?tab=v2-kombinasi" },
+          { id: "profiling.kependudukan.fr", title: "Face Recognation", path: "/profiling/kependudukan?tab=fr" },
+          { id: "profiling.kependudukan.verifikasi", title: "Verifikasi EKTP", path: "/profiling/kependudukan?tab=verifikasi-ektp" },
+          { id: "profiling.kependudukan.v1nik", title: "[V1]Pencarian NIK", path: "/profiling/kependudukan?tab=v1-nik" }
+        ]
+      },
+      { id: "profiling.imigrasi", title: "Imigrasi", path: "/profiling/imigrasi",
+        children: [
+          { id: "profiling.imigrasi.paspor", title: "Paspor", path: "/profiling/imigrasi?tab=paspor" },
+          { id: "profiling.imigrasi.wna", title: "WNA", path: "/profiling/imigrasi?tab=wna" },
+          { id: "profiling.imigrasi.perlintasan", title: "Perlintasan", path: "/profiling/imigrasi?tab=perlintasan" }
+        ]
+      },
+      { id: "profiling.imei", title: "IMEI", path: "/profiling/imei",
+        children: [
+          { id: "profiling.imei.search", title: "Search IMEI", path: "/profiling/imei?tab=search" },
+          { id: "profiling.imei.balance", title: "Balance Check", path: "/profiling/imei?tab=balance" },
+          { id: "profiling.imei.history", title: "History", path: "/profiling/imei?tab=history" }
+        ]
+      },
+      { id: "profiling.divtik", title: "Divtik", path: "/profiling/divtik",
+        children: [
+          { id: "profiling.divtik.nopoleri", title: "Nopol By Eri", path: "/profiling/divtik?tab=nopol-eri" },
+          { id: "profiling.divtik.simlicense", title: "SIM [By License]", path: "/profiling/divtik?tab=sim-license" },
+          { id: "profiling.divtik.simname", title: "SIM [By Name]", path: "/profiling/divtik?tab=sim-name" },
+          { id: "profiling.divtik.license", title: "License", path: "/profiling/divtik?tab=license" },
+          { id: "profiling.divtik.history", title: "History", path: "/profiling/divtik?tab=history" }
+        ]
+      },
+      { id: "profiling.balikanimigrasi", title: "Balikan Imigrasi", path: "/profiling/balikan-imigrasi",
+        children: [
+          { id: "profiling.balikanimigrasi.ftf", title: "Balikan FTF", path: "/profiling/balikan-imigrasi?tab=ftf" },
+          { id: "profiling.balikanimigrasi.napi", title: "Balikan Napi", path: "/profiling/balikan-imigrasi?tab=napi" },
+          { id: "profiling.balikanimigrasi.eksnapiter", title: "Balikan Eksnapiter", path: "/profiling/balikan-imigrasi?tab=eksnapiter" },
+          { id: "profiling.balikanimigrasi.dttot", title: "Balikan DTTOT", path: "/profiling/balikan-imigrasi?tab=dttot" },
+          { id: "profiling.balikanimigrasi.tersangka", title: "Balikan Tersangka", path: "/profiling/balikan-imigrasi?tab=tersangka" }
+        ]
+      }
+    ]
   },
   {
     id: "masterdata",

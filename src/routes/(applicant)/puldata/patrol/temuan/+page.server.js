@@ -2,9 +2,6 @@ import { error, redirect } from '@sveltejs/kit';
 
 const TAB_PERMS = [
   'lapinfo.daftar',
-  'lapinfo.rekapkonten',
-  'lapinfo.rekapmedsos',
-  'lapinfo.rekapnomorsurat',
   'lapinfo.takedown',
   'lapinfo.takedownold',
   'lapinfo.khusus'

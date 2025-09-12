@@ -72,36 +72,36 @@
       </div>
     </div>
     <div class="mt-3 flex items-center justify-end">
-      <button type="button" class="inline-flex items-center rounded-md border border-gray-300 bg-white px-3 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50" on:click={resetFilters}>Reset</button>
+      <button type="button" class="btn btn-outline" on:click={resetFilters}>Reset</button>
     </div>
 
-    <div class="mt-4 overflow-hidden rounded-lg border border-gray-200">
-      <table class="min-w-full divide-y divide-gray-200">
-        <thead class="bg-gray-50">
+    <div class="mt-4 table-wrap">
+      <table class="table">
+        <thead class="table-head">
           <tr>
-            <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Waktu</th>
-            <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Username</th>
-            <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">IP</th>
-            <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Device</th>
-            <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
+            <th class="th">Waktu</th>
+            <th class="th">Username</th>
+            <th class="th">IP</th>
+            <th class="th">Device</th>
+            <th class="th">Status</th>
           </tr>
         </thead>
-        <tbody class="divide-y divide-gray-200 bg-white">
+        <tbody class="tbody">
           {#each rows.filter(r =>
             (!q || `${r.username} ${r.ip} ${r.agent}`.toLowerCase().includes(q.toLowerCase())) &&
             (!status || r.status === status) &&
             inDateRange(r.time, from, to)
           ) as r}
             <tr>
-              <td class="px-4 py-2 text-sm text-gray-900">{r.time}</td>
-              <td class="px-4 py-2 text-sm text-gray-700">{r.username}</td>
-              <td class="px-4 py-2 text-sm text-gray-700">{r.ip}</td>
-              <td class="px-4 py-2 text-sm text-gray-700">{r.agent}</td>
-              <td class="px-4 py-2 text-sm">
+              <td class="td text-gray-900">{r.time}</td>
+              <td class="td">{r.username}</td>
+              <td class="td">{r.ip}</td>
+              <td class="td">{r.agent}</td>
+              <td class="td">
                 {#if r.status === 'Success'}
-                  <span class="rounded bg-green-100 px-2 py-0.5 text-green-800">Success</span>
+                  <span class="badge badge-green">Success</span>
                 {:else}
-                  <span class="rounded bg-red-100 px-2 py-0.5 text-red-800">Failed</span>
+                  <span class="badge badge-red">Failed</span>
                 {/if}
               </td>
             </tr>
@@ -111,4 +111,3 @@
     </div>
   </section>
 </div>
-
