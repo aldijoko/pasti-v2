@@ -2,7 +2,7 @@ import { fail, redirect } from '@sveltejs/kit';
 import { findUser, updateUserProfile } from '$lib/services/users.js';
 
 export const actions = {
-  default: async ({ request, cookies, locals }) => {
+  default: async ({ request, cookies, locals, url }) => {
     if (!locals.user) {
       throw redirect(303, '/login');
     }
@@ -55,12 +55,15 @@ export const actions = {
         avatarUrl: undefined
       });
 
-      // Update session cookie
+      // Update session cookie with proper secure detection (works behind proxies)
+      const xfProto = request.headers.get('x-forwarded-proto');
+      const isHttps = url.protocol === 'https:' || (xfProto ? xfProto.includes('https') : false);
+      const cookieSecure = process.env.COOKIE_SECURE === 'true' || (process.env.COOKIE_SECURE !== 'false' && isHttps);
       cookies.set('session', JSON.stringify(updated), {
         path: '/',
         httpOnly: true,
         sameSite: 'lax',
-        secure: process.env.NODE_ENV === 'production',
+        secure: cookieSecure,
         maxAge: 60 * 60 * 8
       });
 

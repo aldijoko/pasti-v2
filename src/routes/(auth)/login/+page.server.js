@@ -9,13 +9,16 @@ function genCaptcha() {
   return { question: `${a} ${op} ${b} = ?`, answer: String(answer) };
 }
 
-export const load = async ({ cookies }) => {
+export const load = async ({ cookies, url, request }) => {
   const { question, answer } = genCaptcha();
+  const xfProto = request.headers.get('x-forwarded-proto');
+  const isHttps = url.protocol === 'https:' || (xfProto ? xfProto.includes('https') : false);
+  const cookieSecure = process.env.COOKIE_SECURE === 'true' || (process.env.COOKIE_SECURE !== 'false' && isHttps);
   cookies.set('captcha_answer', answer, {
     path: '/',
     httpOnly: true,
     sameSite: 'lax',
-    secure: process.env.NODE_ENV === 'production',
+    secure: cookieSecure,
     maxAge: 60 * 5 // 5 minutes
   });
   return { captchaQuestion: question };
@@ -23,7 +26,7 @@ export const load = async ({ cookies }) => {
 
 
 export const actions = {
-  default: async ({ request, cookies }) => {
+  default: async ({ request, cookies, url }) => {
     const formData = await request.formData();
     const username = String(formData.get('username') || '').trim();
     const password = String(formData.get('password') || '').trim();
@@ -33,11 +36,14 @@ export const actions = {
     const expected = cookies.get('captcha_answer') || '';
     if (!captcha || captcha !== expected) {
       const { question, answer } = genCaptcha();
+      const xfProto2 = request.headers.get('x-forwarded-proto');
+      const isHttps2 = url.protocol === 'https:' || (xfProto2 ? xfProto2.includes('https') : false);
+      const cookieSecure2 = process.env.COOKIE_SECURE === 'true' || (process.env.COOKIE_SECURE !== 'false' && isHttps2);
       cookies.set('captcha_answer', answer, {
         path: '/',
         httpOnly: true,
         sameSite: 'lax',
-        secure: process.env.NODE_ENV === 'production',
+        secure: cookieSecure2,
         maxAge: 60 * 5
       });
       return fail(400, { error: 'Captcha salah. Coba lagi.', captchaQuestion: question });
@@ -47,22 +53,29 @@ export const actions = {
     const user = dummyUsers.find((u) => u.username === username && u.password === password);
     if (!user) {
       const { question, answer } = genCaptcha();
+      const xfProto3 = request.headers.get('x-forwarded-proto');
+      const isHttps3 = url.protocol === 'https:' || (xfProto3 ? xfProto3.includes('https') : false);
+      const cookieSecure3 = process.env.COOKIE_SECURE === 'true' || (process.env.COOKIE_SECURE !== 'false' && isHttps3);
       cookies.set('captcha_answer', answer, {
         path: '/',
         httpOnly: true,
         sameSite: 'lax',
-        secure: process.env.NODE_ENV === 'production',
+        secure: cookieSecure3,
         maxAge: 60 * 5
       });
       return fail(400, { error: "Username atau password salah!", captchaQuestion: question });
     }
+    // Decide cookie security dynamically: use HTTPS detection or env override
+    const xfProto = request.headers.get('x-forwarded-proto');
+    const isHttps = url.protocol === 'https:' || (xfProto ? xfProto.includes('https') : false);
+    const cookieSecure = process.env.COOKIE_SECURE === 'true' || (process.env.COOKIE_SECURE !== 'false' && isHttps);
 
     // Success: set session and clear captcha
     cookies.set('session', JSON.stringify(user), {
       path: '/',
-      httpOnly: false, // set true if not using client JS to read it
+      httpOnly: false, // keep false since some pages read it in client; switch to true if not needed
       sameSite: 'lax',
-      secure: process.env.NODE_ENV === 'production',
+      secure: cookieSecure,
       maxAge: 60 * 60 * 8 // 8 hours
     });
     cookies.delete('captcha_answer', { path: '/' });
@@ -70,4 +83,3 @@ export const actions = {
     throw redirect(303, '/dashboard');
   }
 };
-
