@@ -4,8 +4,10 @@
 FROM node:20-alpine AS builder
 WORKDIR /app
 
-COPY package.json yarn.lock ./
-RUN yarn install --frozen-lockfile
+# Copy dependency files (yarn.lock opsional)
+COPY package.json yarn.lock* ./
+
+RUN yarn install --frozen-lockfile || yarn install
 
 COPY . .
 RUN yarn build
@@ -19,8 +21,9 @@ ENV NODE_ENV=production \
 
 COPY --from=builder /app/build ./build
 COPY --from=builder /app/static ./static
-COPY package.json yarn.lock ./
-RUN yarn install --production --frozen-lockfile
+COPY package.json yarn.lock* ./
+
+RUN yarn install --production --frozen-lockfile || yarn install --production
 
 EXPOSE 3000
 CMD ["node", "build"]
