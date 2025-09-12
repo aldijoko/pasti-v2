@@ -4,40 +4,35 @@
 FROM node:20-alpine AS builder
 WORKDIR /app
 
-# Copy dependency files (yarn.lock opsional)
-COPY package.json yarn.lock* ./
+# Copy npm manifests (use npm only)
+COPY package.json package-lock.json* ./
 
-# Install semua dependency (termasuk devDependencies, perlu untuk build SvelteKit)
-RUN yarn install --frozen-lockfile || yarn install
+# Install dependencies (dev deps included for build)
+RUN --mount=type=cache,target=/root/.npm npm ci
 
-# Copy semua source code
+# Copy source
 COPY . .
 
-# Build aplikasi (adapter-node menghasilkan folder build/)
-RUN yarn build
+# Build SvelteKit (adapter-node -> build/) using Vite CLI
+RUN npx vite build
 
 
 # ---- Run stage ----
 FROM node:20-alpine AS runner
 WORKDIR /app
 
-# Environment runtime
 ENV NODE_ENV=production \
     HOST=0.0.0.0 \
     PORT=3000
 
-# Copy hasil build dari builder
+# Install only production dependencies
+COPY package.json package-lock.json* ./
+RUN --mount=type=cache,target=/root/.npm npm ci --omit=dev
+
+# Copy built output (and static if needed)
 COPY --from=builder /app/build ./build
 COPY --from=builder /app/static ./static
 
-# Copy package.json (untuk dependencies runtime)
-COPY package.json yarn.lock* ./
-
-# Install hanya dependency production
-RUN yarn install --production --frozen-lockfile || yarn install --production
-
-# Expose port aplikasi
 EXPOSE 3000
 
-# Jalankan aplikasi
 CMD ["node", "build"]
