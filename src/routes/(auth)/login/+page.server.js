@@ -31,10 +31,11 @@ export const actions = {
     const username = String(formData.get('username') || '').trim();
     const password = String(formData.get('password') || '').trim();
     const captcha = String(formData.get('captcha') || '').trim();
+    const bypassCaptcha = process.env.AUTH_DISABLE_CAPTCHA === 'true';
 
     // Validate captcha
     const expected = cookies.get('captcha_answer') || '';
-    if (!captcha || captcha !== expected) {
+    if (!bypassCaptcha && (!captcha || captcha !== expected)) {
       const { question, answer } = genCaptcha();
       const xfProto2 = request.headers.get('x-forwarded-proto');
       const isHttps2 = url.protocol === 'https:' || (xfProto2 ? xfProto2.includes('https') : false);
